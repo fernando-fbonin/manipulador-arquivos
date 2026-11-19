@@ -93,7 +93,8 @@ class ConvertToMarkdownUseCase:
         if not markdown.strip():
             raise ConversionError(
                 "Nenhum texto foi encontrado no arquivo. Se for um PDF escaneado "
-                "(imagem), ele precisará de OCR, que será implementado em uma fase futura."
+                "(imagem), ative o OCR (OCR_ENABLED=true no arquivo .env) e "
+                "baixe os arquivos de idioma (veja a seção OCR do README)."
             )
 
         # parents=True cria pastas-pai que faltarem; exist_ok=True evita erro

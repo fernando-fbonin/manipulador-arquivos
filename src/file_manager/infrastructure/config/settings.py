@@ -38,13 +38,18 @@ class Settings:
     ninguém altera uma configuração por engano durante a execução.
     """
 
-    app_env: str          # Ambiente de execução: local, staging, production
-    log_level: str        # Nível de detalhe dos logs
-    max_upload_mb: int    # Tamanho máximo de upload, em megabytes
+    app_env: str                     # Ambiente de execução: local, staging, production
+    log_level: str                   # Nível de detalhe dos logs
+    max_upload_mb: int               # Tamanho máximo de upload, em megabytes
     large_output_warning_chars: int  # Acima disso, a conversão mostra um aviso de tamanho
-    library_dir: Path     # Pasta com os arquivos que já estão no programa
-    uploads_dir: Path     # Pasta onde ficam os arquivos novos enviados
-    output_dir: Path      # Pasta onde ficam os resultados gerados
+    library_dir: Path                # Pasta com os arquivos que já estão no programa
+    uploads_dir: Path                # Pasta onde ficam os arquivos novos enviados
+    output_dir: Path                 # Pasta onde ficam os resultados gerados
+    ocr_enabled: bool                # O OCR está ligado?
+    ocr_languages: str               # Idiomas do OCR, separados por "+" (ex.: "por+eng")
+    ocr_dpi: int                     # Resolução usada para "fotografar" cada página
+    ocr_min_text_chars: int          # Abaixo disso, a página é tratada como escaneada
+    tessdata_dir: Path               # Pasta com os arquivos de idioma (.traineddata)
 
     def ensure_directories(self) -> None:
         """Cria as pastas de trabalho caso ainda não existam.
@@ -74,6 +79,15 @@ def _resolve_directory(env_name: str, default_relative: str) -> Path:
     return path
 
 
+def _parse_bool(value: str) -> bool:
+    """Converte um texto do .env em verdadeiro/falso.
+
+    Aceita "true", "1", "yes", "sim" e "on" (em qualquer combinação de
+    maiúsculas e minúsculas) como verdadeiro. Qualquer outro valor é falso.
+    """
+    return value.strip().lower() in {"true", "1", "yes", "sim", "on"}
+
+
 def load_settings() -> Settings:
     """Lê as variáveis de ambiente e monta o objeto Settings.
 
@@ -89,4 +103,9 @@ def load_settings() -> Settings:
         library_dir=_resolve_directory("LIBRARY_DIR", "data/library"),
         uploads_dir=_resolve_directory("UPLOADS_DIR", "data/uploads"),
         output_dir=_resolve_directory("OUTPUT_DIR", "data/output"),
+        ocr_enabled=_parse_bool(os.getenv("OCR_ENABLED", "true")),
+        ocr_languages=os.getenv("OCR_LANGUAGES", "por+eng").strip(),
+        ocr_dpi=int(os.getenv("OCR_DPI", "300")),
+        ocr_min_text_chars=int(os.getenv("OCR_MIN_TEXT_CHARS", "20")),
+        tessdata_dir=_resolve_directory("TESSDATA_DIR", "data/tessdata"),
     )

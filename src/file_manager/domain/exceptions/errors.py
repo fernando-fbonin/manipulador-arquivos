@@ -41,3 +41,8 @@ class UnsupportedFormatError(FileManagerError):
 
 class ConversionError(FileManagerError):
     """O arquivo foi reconhecido, mas a conversão falhou ou não gerou conteúdo."""
+
+
+
+class OcrUnavailableError(FileManagerError):
+    """O OCR foi necessário, mas os dados de idioma não estão disponíveis."""    

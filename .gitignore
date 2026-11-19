@@ -31,5 +31,7 @@ Desktop.ini
 data/library/*
 data/uploads/*
 data/output/*
+# Dados de idioma do OCR (baixados manualmente; veja o README)
+data/tessdata/*
 # Exceção: mantém o .gitkeep para a pasta existir no repositório
 !.gitkeep
